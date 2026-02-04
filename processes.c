@@ -4,19 +4,14 @@
 #include<stdbool.h>
 #include <psapi.h>
 
- 
-typedef struct {
-    DWORD *processes; // Change from array [] to pointer *
-    DWORD process_count;
-} process_list;
 
-struct process{
+typedef struct {
     DWORD pid;
     char name[128];
     bool is_program;
-};
+}process;
 
-process_list *get_processes(DWORD all_processes[2048], DWORD *process_count){
+void get_processes(DWORD all_processes[2048], DWORD *process_count){
     DWORD cb_needed;
 
 
@@ -26,10 +21,9 @@ process_list *get_processes(DWORD all_processes[2048], DWORD *process_count){
 
 }
 
-void get_process_info(struct process *curr_process, DWORD pid){
+void get_process_info(process *curr_process, DWORD pid){
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
-    unsigned int index = 0;
-    unsigned int last_indice = 0;
+
     DWORD sessionID;
 
     if (hProcess == NULL) return;
@@ -58,13 +52,20 @@ void get_process_info(struct process *curr_process, DWORD pid){
     
 }
 
-struct process *get_all_process_info_malloced(DWORD *processes, DWORD process_count){
-    struct process *res;
-    res = calloc(process_count,sizeof(struct process));
+process *get_all_process_info_malloced(DWORD *processes, DWORD process_count){
+    process *res;
+    res = calloc(process_count,sizeof(process));
     if (res == NULL) return NULL;
-    for (int i = 0; i<process_count;i++){
+    for (unsigned int i = 0; i<process_count;i++){
         get_process_info(&res[i], processes[i]);
     }
 
     return res;
+}
+
+bool check_process_in_process(process *ps, DWORD process_count, const char *p_name){
+    for (DWORD i = 0; i<process_count;i++)
+        if (strcmp(ps[i].name, p_name) == 0) return 1;
+    
+    return 0;
 }
