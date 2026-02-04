@@ -54,3 +54,16 @@ void update_session(session *s, process *new_proc, DWORD count){
     
 }
 
+void free_session(session *s){
+    for (unsigned int i =0; i<s->timestamp_count;i++){
+        for (unsigned int j=0; j<s->process_list_length[i];j++){
+
+        }
+        free(s->process_list[i]);
+
+    }
+    free(s->timestamps);
+    free(s->process_list);
+    free(s->process_list_length);
+}
+

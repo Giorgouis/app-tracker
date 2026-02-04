@@ -14,12 +14,16 @@ typedef struct process{
 
 
 
-void get_processes(DWORD *all_processes, DWORD *process_count);
+void get_processes(DWORD all_processes[2048], DWORD *process_count);
 
 void get_process_info(process *curr_process, DWORD pid);
 
 process *get_all_process_info_malloced(DWORD *processes, DWORD process_count);
 
 bool check_process_in_process(process *ps, DWORD process_count, const char *p_name);
+
+void quicksort(process *arr, DWORD low, DWORD high);
+
+void sort_processes_alphabetically(process *p, DWORD process_count);
 
 #endif

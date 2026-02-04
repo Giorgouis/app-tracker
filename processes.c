@@ -1,5 +1,6 @@
 #include <windows.h>
 #include<stdio.h>
+#include<stdlib.h>
 #include<string.h>
 #include<stdbool.h>
 #include <psapi.h>
@@ -68,4 +69,42 @@ bool check_process_in_process(process *ps, DWORD process_count, const char *p_na
         if (strcmp(ps[i].name, p_name) == 0) return 1;
     
     return 0;
+}
+static void swap(process *a, process *b){
+    process temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+static DWORD partition(process *arr, DWORD low, DWORD high){
+    process p = arr[low];
+    DWORD i = low;
+    DWORD j = high;
+    while (i<j){
+        while (i<=high-1 && strcmp(arr[i].name, p.name)<=0){
+            i++;
+        }
+
+        while (j>=low+1 && strcmp(arr[j].name, p.name)>0){
+            j--;
+        }
+        if (i<j) swap(&arr[i],&arr[j]);
+    }
+    swap(&arr[low],&arr[j]);
+    return j;
+}
+
+void quicksort(process *arr, DWORD low, DWORD high){
+    if (low<high){
+        DWORD p = partition(arr, low,high);
+
+        if (p>0) quicksort(arr, low, p-1);
+        quicksort(arr, p+1, high);
+
+    }
+}
+
+void sort_processes_alphabetically(process *p, DWORD process_count){
+    if (process_count>0)
+        quicksort(p, 0, process_count-1);
 }

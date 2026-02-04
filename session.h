@@ -23,6 +23,8 @@ typedef struct {
 void init_session(session *s);
 
 
-void update_session(session *s, process *new_proc, unsigned int count);
+void update_session(session *s, process *new_proc, DWORD count);
+
+void free_session(session *s);
 
 #endif // SESSION_H
