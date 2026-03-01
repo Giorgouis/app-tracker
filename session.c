@@ -67,3 +67,25 @@ void free_session(session *s){
     free(s->process_list_length);
 }
 
+void print_session_flat(session *s) {
+    for (unsigned int i = 0; i < s->timestamp_count; i++) {
+        time_t ts = s->timestamps[i];
+
+        for (unsigned int j = 0; j < s->process_list_length[i]; j++) {
+            process *p = &s->process_list[i][j];
+
+            printf("%u %ld %lu %s %d\n",
+                i,                 // timestamp index
+                (long)ts,          // timestamp
+                p->pid,            // process ID
+                p->name,           // name
+                p->is_program      // 0/1
+            );
+        }
+    }
+}
+
+void sort_session(session *s){
+    for (unsigned int i = 0; i<s->timestamp_count; i++)
+            sort_processes_alphabetically(s->process_list[i], s->process_list_length[i]);
+}

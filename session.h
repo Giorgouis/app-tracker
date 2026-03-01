@@ -27,4 +27,8 @@ void update_session(session *s, process *new_proc, DWORD count);
 
 void free_session(session *s);
 
+void print_session_flat(session *s);
+
+void sort_session(session *s);
+
 #endif // SESSION_H

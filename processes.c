@@ -5,10 +5,11 @@
 #include<stdbool.h>
 #include <psapi.h>
 
+#define NAME_LEN 128
 
 typedef struct {
     DWORD pid;
-    char name[128];
+    char name[NAME_LEN];
     bool is_program;
 }process;
 
@@ -36,19 +37,19 @@ void get_process_info(process *curr_process, DWORD pid){
         curr_process->pid = pid;
         char *last_slash = strrchr(path, '\\');
         if (last_slash != NULL)
-            strncpy(curr_process->name, last_slash + 1, 128);
+            strncpy(curr_process->name, last_slash + 1, NAME_LEN);
 
         else 
-            strncpy(curr_process->name, path, 128);
+            strncpy(curr_process->name, path, NAME_LEN);
     
-    curr_process->name[127] = '\0';
+    curr_process->name[NAME_LEN-1] = '\0';
     if (ProcessIdToSessionId(pid, &sessionID)){
         if (sessionID != 0) curr_process->is_program = true;
         else curr_process->is_program = false;
     }
     else curr_process->is_program = false;
     }
-    curr_process->name[127] = '\0';
+    curr_process->name[NAME_LEN-1] = '\0';
 
     
 }
@@ -108,3 +109,4 @@ void sort_processes_alphabetically(process *p, DWORD process_count){
     if (process_count>0)
         quicksort(p, 0, process_count-1);
 }
+

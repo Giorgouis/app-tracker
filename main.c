@@ -2,58 +2,95 @@
 #include<stdlib.h>
 #include<time.h>
 #include "processes.h"
+#include "session.h"
+#include"data.h"
+
 
 int main(int argc, char **argv){
-    printf("%d\n\n", argc);
-    for (int i = 0; i<argc; i++){
-        printf("%i | %s\n", i, argv[i]);
+    /*session s1;
+    init_session(&s1);
+    update_session(&s1, NULL, 0);
+    Sleep(1500);
+    update_session(&s1, NULL, 0);
+    Sleep(1500);
+    update_session(&s1, NULL, 0);
+    Sleep(1500);
+    update_session(&s1, NULL, 0);
+    FILE *ff = fopen("test.txt", "ab");
+    fclose(ff);
+    write_session("test.txt", &s1);
+    session s2;
+    FILE *f = fopen("test.txt", "rb");
+    while (construct_next_session(f, &s2));
+    print_session_flat(&s2);
+    free_session(&s1);
+    free_session(&s2);
+    */
+   /*
+    char output[256] = "test.txt";
+    bool read = false;
+    for (int i = 0; i<argc;i++){
+        if (strcmp(argv[i], "-o") == 0 && i+1<argc){
+            strcpy(output, argv[i+1]);
+        }
+        else if (strcmp(argv[i], "r") == 0 || strcmp(argv[i], "read") == 0) read = true;
     }
-    if (argc>=2 && strcmp(argv[1], "test") == 0){
-        DWORD pids[2048];
-        DWORD count = 0;
+    session s;
+    if (!read){
+    
+    init_session(&s);
+    for (int i =0;i<100;i++){
+        update_session(&s, NULL, 0);
+        Sleep(10);
+    }
+    // FILE *f = fopen(output, "ab");
+    write_session(output, &s);
+    // fclose(f);
+    }
+    else {
+        printf("reading\n");
+        
+        FILE *f = fopen(output, "rb");
+        while (construct_next_session(f, &s)){print_session_flat(&s);}
+        fclose(f);
+        
+    }
+    free_session(&s);
 
-        printf("Gathering system processes...\n\n");
+    */
 
-        // 1. Get raw PIDs using your stack-based array
-        get_processes(pids, &count);
-
-        if (count == 0) {
-            printf("Failed to retrieve processes.\n");
-            return 1;
+    char output[128] = "output.txt";
+    bool read = false;
+    DWORD count = 50;
+    DWORD delta_t = 600;
+    (void)read; (void)count; (void)delta_t;
+    for (int i =0; i<argc;i++){
+        if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "-output") == 0 ) && i+1<argc){
+            strcpy(output, argv[i+1]);
         }
 
-        // 2. Use your malloced function to create the descriptive list
-        struct process *list = get_all_process_info_malloced(pids, count);
-
-        if (list == NULL) {
-            printf("Memory allocation failed.\n");
-            return 1;
+        else if ((strcmp(argv[i], "-c") == 0 || strcmp(argv[i], "-count") == 0 ) && i+1<argc){
+            count = (DWORD)strtoul(argv[i+1], NULL, 10);
+        }
+        
+        else if ((strcmp(argv[i], "-t") == 0 || strcmp(argv[i], "-times") == 0 || strcmp(argv[i], "-time") == 0 ) && i+1<argc){
+            delta_t = (DWORD)strtoul(argv[i+1], NULL, 10);
         }
 
-        // 3. Print a header for our table
-        printf("%-8s | %-30s | %s\n", "PID", "NAME", "CATEGORY");
-        printf("----------------------------------------------------------\n");
+        else if (strcmp(argv[i], "-r") == 0 || strcmp(argv[i], "-read") == 0) read = true;
+    }
 
-        // 4. Loop through and display the data
-        for (DWORD i = 0; i < count; i++) {
-            // Only print if the PID is valid (skipping ones we couldn't open)
-            if (list[i].pid != 0) {
-                char *type = list[i].is_program ? "User App (Chrome/Spotify)" : "System/Background";
-                printf("%-8lu | %-30s | %s\n", list[i].pid, list[i].name, type);
-            }
-        }
+    session s;
+    init_session(&s);
+    
+    for (DWORD i =0; i<count;i++){
+        update_session(&s, NULL, 0);
+        
+    }
 
-        // 5. Cleanup: Critical in C!
-        free(list);
+    write_session_const_bytelen("sessions.bin", &s);
+    free_session(&s);
 
-        printf("\nFinished. Total processes scanned: %lu\n", count);}
     return 0;
 }
-
-
-
-
-
-
-
 
