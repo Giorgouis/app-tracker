@@ -61,8 +61,8 @@ int main(int argc, char **argv){
 
     char output[128] = "output.txt";
     bool read = false;
-    DWORD count = 50;
-    DWORD delta_t = 600;
+    DWORD count = 6;
+    DWORD delta_t = 6000;
     (void)read; (void)count; (void)delta_t;
     for (int i =0; i<argc;i++){
         if ((strcmp(argv[i], "-o") == 0 || strcmp(argv[i], "-output") == 0 ) && i+1<argc){
@@ -82,9 +82,10 @@ int main(int argc, char **argv){
 
     session s;
     init_session(&s);
-    
+    if (delta_t<1400) delta_t += 1000;
     for (DWORD i =0; i<count;i++){
         update_session(&s, NULL, 0);
+        Sleep(delta_t);
         
     }
 

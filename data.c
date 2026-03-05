@@ -68,7 +68,7 @@ bool write_session_const_bytelen(const char *filename, session *s){
             process *p = &s->process_list[i][j];
             uint32_t pid = p->pid;
             uint8_t is_program = p->is_program ? 1 : 0;
-            uint16_t name_len = (uint16_t)strlen(p->name);
+            uint16_t name_len = (uint16_t)NAME_LEN;
 
             fwrite(&pid, sizeof(uint32_t), 1, f);
             fwrite(&is_program, sizeof(uint8_t), 1, f);

@@ -24,6 +24,7 @@ void get_processes(DWORD all_processes[2048], DWORD *process_count){
 }
 
 void get_process_info(process *curr_process, DWORD pid){
+    memset(curr_process->name, 0, NAME_LEN);
     HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, pid);
 
     DWORD sessionID;
@@ -36,11 +37,13 @@ void get_process_info(process *curr_process, DWORD pid){
     if (QueryFullProcessImageNameA(hProcess, 0, path, &size)){
         curr_process->pid = pid;
         char *last_slash = strrchr(path, '\\');
-        if (last_slash != NULL)
+        if (last_slash != NULL){
             strncpy(curr_process->name, last_slash + 1, NAME_LEN);
-
-        else 
+            curr_process->name[NAME_LEN-1] = '\0';
+    }
+        else { 
             strncpy(curr_process->name, path, NAME_LEN);
+            curr_process->name[NAME_LEN-1] = '\0';}
     
     curr_process->name[NAME_LEN-1] = '\0';
     if (ProcessIdToSessionId(pid, &sessionID)){
@@ -55,11 +58,28 @@ void get_process_info(process *curr_process, DWORD pid){
 }
 
 process *get_all_process_info_malloced(DWORD *processes, DWORD process_count){
+
     process *res;
+    DWORD real_count = 0;
     res = calloc(process_count,sizeof(process));
     if (res == NULL) return NULL;
-    for (unsigned int i = 0; i<process_count;i++){
-        get_process_info(&res[i], processes[i]);
+    for (DWORD i = 0; i<process_count;i++){
+        process temp = {0};
+
+        get_process_info(&temp, processes[i]);
+
+        if (temp.name[0] != '\0'){
+            res[real_count++] = temp;
+        }
+    }
+    if (real_count == 0){
+        free(res);
+        return NULL;
+    }
+
+    process *tmp = realloc(res, sizeof(process)*real_count);
+    if (tmp !=NULL){
+        res = tmp;
     }
 
     return res;
