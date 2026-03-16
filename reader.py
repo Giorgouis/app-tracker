@@ -60,9 +60,7 @@ def read_sessions(filename):
                 "process_list_lengths": process_list_lengths,
                 "process_list": process_lists
             })
-    # for x in sessions[0]:
-    #     if x['pid'] == :
-    #         sessions[0].pop(x)
+
     return sessions[0]
 
 def get_process_names_list(session):
@@ -74,47 +72,41 @@ def get_process_names_list(session):
         res.append(curr)
     return res
 
-    # res = [[]*len(session['timestamps'])]
-    # for x in res:
-    #     print(x)
 
-# sleep(2)
-# print('Reading data')
-# t1 = time()
-
-# all_sessions = read_sessions("sessions.bin")
-# t2 = time()
-# print(f'Took {t2-t1}')
-
-# print('printing all data')
-# sleep(1)
-# t1 = time()
-# for session in all_sessions:
-#     # if session.name != '':
-#         pprint.pprint(session)
-# t2 = time()
-# print(f'\n\n\nTook {t2-t1}')
-
-if __name__ == '__main__':
-    # argv = sys.argv
-    # if len(argv)==2:
-    #     if argv[1].endswith('.txt'):
-    subprocess.run(["logger.exe", "-c", '10', '-t', '1600'], capture_output=False)
-    session = read_sessions('sessions.bin')
+def get_process_times(session):
     timestamps = session['timestamps']
     process_times = dict()
     l = len(timestamps)
-    # print(l)
-    session = get_process_names_list(session)
-    # print(session)
-    for i in range(1, l):
-        if i<l-1:
-            for p in session[i]:
-                if p in session[i+1]:
-                    if p in process_times:
-                        process_times[p]+= timestamps[i+1]-timestamps[i]
-                    else:
-                        process_times[p] = timestamps[i+1]-timestamps[i]
-                    
-    pprint.pprint(process_times)
 
+    s = get_process_names_list(session)
+
+    for i in range(0, l):
+        if i<l-1:
+            for p in s[i]:
+                if p in s[i+1]:
+                    if p in process_times:
+                        process_times[p]+= max(timestamps[i+1]-timestamps[i],1)
+                    else:
+                        process_times[p] = max(timestamps[i+1]-timestamps[i],1)
+    return process_times
+
+
+if __name__ == '__main__':
+    print('Best -c 10 -t 1000')
+    print('Best -c 10 -t 1000')
+    print('Best -c 10 -t 1000')
+
+    t1 = time()
+    subprocess.run(["logger.exe", "-c", '5', '-t', '1000'], capture_output=False)
+    t2 = time()
+    session = read_sessions('sessions.bin')
+    timestamps = session['timestamps']
+    pt = get_process_times(session)
+    print(time()-t1)
+    l = len(timestamps)
+    # print(l)
+    t3 = time()
+    pprint.pprint(pt)
+    print(f'logger.exe run for {t2-t1}\npython read data for {t3-t2}')
+    # for i in range(len(timestamps)-1):
+    #     print(timestamps[i+1]-timestamps[i])

@@ -7,57 +7,7 @@
 
 
 int main(int argc, char **argv){
-    /*session s1;
-    init_session(&s1);
-    update_session(&s1, NULL, 0);
-    Sleep(1500);
-    update_session(&s1, NULL, 0);
-    Sleep(1500);
-    update_session(&s1, NULL, 0);
-    Sleep(1500);
-    update_session(&s1, NULL, 0);
-    FILE *ff = fopen("test.txt", "ab");
-    fclose(ff);
-    write_session("test.txt", &s1);
-    session s2;
-    FILE *f = fopen("test.txt", "rb");
-    while (construct_next_session(f, &s2));
-    print_session_flat(&s2);
-    free_session(&s1);
-    free_session(&s2);
-    */
-   /*
-    char output[256] = "test.txt";
-    bool read = false;
-    for (int i = 0; i<argc;i++){
-        if (strcmp(argv[i], "-o") == 0 && i+1<argc){
-            strcpy(output, argv[i+1]);
-        }
-        else if (strcmp(argv[i], "r") == 0 || strcmp(argv[i], "read") == 0) read = true;
-    }
-    session s;
-    if (!read){
     
-    init_session(&s);
-    for (int i =0;i<100;i++){
-        update_session(&s, NULL, 0);
-        Sleep(10);
-    }
-    // FILE *f = fopen(output, "ab");
-    write_session(output, &s);
-    // fclose(f);
-    }
-    else {
-        printf("reading\n");
-        
-        FILE *f = fopen(output, "rb");
-        while (construct_next_session(f, &s)){print_session_flat(&s);}
-        fclose(f);
-        
-    }
-    free_session(&s);
-
-    */
 
     char output[128] = "output.txt";
     bool read = false;
@@ -82,7 +32,7 @@ int main(int argc, char **argv){
 
     session s;
     init_session(&s);
-    if (delta_t<1400) delta_t += 1000;
+    if (delta_t<1000) delta_t = 1000;
     for (DWORD i =0; i<count;i++){
         update_session(&s, NULL, 0);
         Sleep(delta_t);

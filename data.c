@@ -80,6 +80,68 @@ bool write_session_const_bytelen(const char *filename, session *s){
     return 1;
 }
 
+// unsigned char* session_to_bytes(session *s, size_t *out_size)
+// {
+//     if (!s) return NULL;
+
+//     // First, calculate required size
+//     size_t size = 0;
+//     size += sizeof(uint32_t); // timestamp_count
+//     size += s->timestamp_count * sizeof(uint64_t); // timestamps
+//     size += s->timestamp_count * sizeof(uint32_t); // process_list_length
+
+//     for (uint32_t i = 0; i < s->timestamp_count; i++) {
+//         for (uint32_t j = 0; j < s->process_list_length[i]; j++) {
+//             size += sizeof(uint32_t); // pid
+//             size += sizeof(uint8_t);  // is_program
+//             size += sizeof(uint16_t); // name_len
+//             size += NAME_LEN;         // name
+//         }
+//     }
+
+//     // Allocate buffer
+//     unsigned char *buf = malloc(size);
+//     if (!buf) return NULL;
+
+//     unsigned char *ptr = buf;
+
+//     // Write timestamp_count
+//     uint32_t timestamp_count = s->timestamp_count;
+//     memcpy(ptr, &timestamp_count, sizeof(uint32_t));
+//     ptr += sizeof(uint32_t);
+
+//     // Write timestamps
+//     for (uint32_t i = 0; i < s->timestamp_count; i++) {
+//         uint64_t ts = (uint64_t)s->timestamps[i];
+//         memcpy(ptr, &ts, sizeof(uint64_t));
+//         ptr += sizeof(uint64_t);
+//     }
+
+//     // Write process_list_length
+//     for (uint32_t i = 0; i < s->timestamp_count; i++) {
+//         uint32_t length = s->process_list_length[i];
+//         memcpy(ptr, &length, sizeof(uint32_t));
+//         ptr += sizeof(uint32_t);
+//     }
+
+//     // Write processes
+//     for (uint32_t i = 0; i < s->timestamp_count; i++) {
+//         for (uint32_t j = 0; j < s->process_list_length[i]; j++) {
+//             process *p = &s->process_list[i][j];
+//             uint32_t pid = p->pid;
+//             uint8_t is_program = p->is_program ? 1 : 0;
+//             uint16_t name_len = (uint16_t)NAME_LEN;
+
+//             memcpy(ptr, &pid, sizeof(uint32_t)); ptr += sizeof(uint32_t);
+//             memcpy(ptr, &is_program, sizeof(uint8_t)); ptr += sizeof(uint8_t);
+//             memcpy(ptr, &name_len, sizeof(uint16_t)); ptr += sizeof(uint16_t);
+//             memcpy(ptr, p->name, NAME_LEN); ptr += NAME_LEN;
+//         }
+//     }
+
+//     *out_size = size;
+//     return buf; // caller must free
+// }
 
 
 // char **get_common_names(session *s, unsigned int i, unsigned int *out_count){
