@@ -8,7 +8,7 @@
 #define PIDS_LEN 2048
 typedef struct process{
     DWORD pid;
-    char name[128];
+    char name[NAME_LEN];
     bool is_program;
 }process;
 
